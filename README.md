@@ -41,8 +41,8 @@ We need to define a DDD (Dialog Domain Description), which handles at least two 
 ### DDD (Dialog Domain Description)
 
 U > I want to meet with friends
-    Alternatives: 
-    U > setup a meeting with friends
+
+Alternatives: (U > setup a meeting with friends)
 
 S > When do you want to have a meeting with friends? Which day as number)?
 
