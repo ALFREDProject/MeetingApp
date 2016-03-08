@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button meetingButton;
     private List<Contact> contacts = new ArrayList<Contact>();
-    private String requestURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/56dec456e4b074fe33fd8d05/contacts/all";
+    private String requestURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/56df0386e4b054b0e40cd6fc/contacts/all";
     RequestQueue requestQueue;
 
     @Override
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject contact = response.getJSONObject(i);
-                        contacts.add(new Contact(contact.getString("alfredUserName"), contact.getString("phone"), contact.getString("email")));
+                        contacts.add(new Contact(contact.getString("firstName") + " " + contact.getString("lastName"), contact.getString("phone"), contact.getString("email")));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -6,4 +6,5 @@
     <string name="add_contacts">Add Contacts</string>
     <string name="location">Location:</string>
     <string name="contacts">Contacts</string>
+    <string name="invite">Send invitations!</string>
 </resources>

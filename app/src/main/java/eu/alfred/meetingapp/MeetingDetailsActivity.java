@@ -14,7 +14,9 @@ import android.widget.TimePicker;
 
 import com.android.volley.toolbox.Volley;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class MeetingDetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -22,6 +24,8 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
     private EditText datePickerEditText;
     private EditText timePickerEditText;
     private Button addContactsButton;
+    private Button inviteContactsButton;
+    private List<Contact> contactsToinvite = new ArrayList<Contact>();
     private int mYear, mMonth, mDay, mHour, mMinute;
 
     @Override
@@ -33,10 +37,12 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
         datePickerEditText = (EditText) findViewById(R.id.dateEditText);
         timePickerEditText = (EditText) findViewById(R.id.timeEditText);
         addContactsButton = (Button) findViewById(R.id.addContactsButton);
+        inviteContactsButton = (Button) findViewById(R.id.inviteContactsButton);
 
         datePickerEditText.setOnClickListener(this);
         timePickerEditText.setOnClickListener(this);
         addContactsButton.setOnClickListener(this);
+        inviteContactsButton.setOnClickListener(this);
 
     }
 
@@ -81,6 +87,13 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
 
              Intent listContactsActivity = new Intent(this, ListContactsActivity.class);
              startActivity(listContactsActivity);
+
+         }
+
+         if (v == inviteContactsButton) {
+            if (contactsToinvite.isEmpty()) {
+
+            }
 
          }
 
