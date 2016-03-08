@@ -2,9 +2,9 @@ package eu.alfred.meetingapp;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -12,48 +12,31 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Calendar;
 
 public class MeetingDetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText subjectEditText;
+    //private EditText subjectEditText;
     private EditText datePickerEditText;
     private EditText timePickerEditText;
-    private TextView testTextView;
     private Button addContactsButton;
-    private String requestURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/56dd6bb2e4b074fe33fd8d03/contacts/all";
     private int mYear, mMonth, mDay, mHour, mMinute;
-    RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meeting_details);
 
-        subjectEditText = (EditText) findViewById(R.id.subjectEditText);
+        //subjectEditText = (EditText) findViewById(R.id.subjectEditText);
         datePickerEditText = (EditText) findViewById(R.id.dateEditText);
         timePickerEditText = (EditText) findViewById(R.id.timeEditText);
         addContactsButton = (Button) findViewById(R.id.addContactsButton);
-        testTextView = (TextView) findViewById(R.id.testTextView);
-        requestQueue = Volley.newRequestQueue(this);
 
         datePickerEditText.setOnClickListener(this);
         timePickerEditText.setOnClickListener(this);
         addContactsButton.setOnClickListener(this);
-
-
 
     }
 
@@ -96,28 +79,8 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
 
          if (v == addContactsButton) {
 
-             Log.d("addContactButton", "Button clicked!");
-
-             JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONArray>() {
-                 @Override
-                 public void onResponse(JSONArray response) {
-                     try {
-                         JSONObject contact = response.getJSONObject(0);
-                         testTextView.setText(contact.getString("alfredUserName"));
-                     } catch (JSONException e) {
-                         e.printStackTrace();
-                     }
-
-                     //Log.d("jsonresponse", "in onresponse");
-                 }
-             }, new Response.ErrorListener() {
-                 @Override
-                 public void onErrorResponse(VolleyError error) {
-                     Log.e("VOLLEY", error.getMessage());
-                 }
-             });
-
-             requestQueue.add(request);
+             Intent listContactsActivity = new Intent(this, ListContactsActivity.class);
+             startActivity(listContactsActivity);
 
          }
 

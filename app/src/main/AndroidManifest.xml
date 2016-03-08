@@ -12,14 +12,17 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" android:label="Upcoming Event">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MeetingDetailsActivity" android:label="@string/organize_meeting"></activity>
+        <activity
+            android:name=".MeetingDetailsActivity"
+            android:label="@string/organize_meeting" />
+        <activity android:name=".ListContactsActivity"></activity>
     </application>
 
 </manifest>
