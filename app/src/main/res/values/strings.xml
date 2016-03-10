@@ -7,4 +7,5 @@
     <string name="location">Location:</string>
     <string name="contacts">Contacts</string>
     <string name="invite">Send invitations!</string>
+    <string name="meeting_subject">Subject</string>
 </resources>

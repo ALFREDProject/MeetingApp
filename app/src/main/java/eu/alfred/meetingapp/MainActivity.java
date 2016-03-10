@@ -3,6 +3,9 @@ package eu.alfred.meetingapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,11 +27,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import eu.alfred.meetingapp.adapter.RecyclerAdapter;
+
 public class MainActivity extends AppCompatActivity {
 
-    private ListView meetingsListView;
+    //private ListView meetingsListView;
     private List<Meeting> meetings = new ArrayList<Meeting>();
     private List<Contact> contacts = new ArrayList<Contact>();
+    private RecyclerView meetingsRecyclerView;
     private String requestURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/56df0386e4b054b0e40cd6fc/contacts/all";
     RequestQueue requestQueue;
 
@@ -39,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         // meetingButton = (Button) findViewById(R.id.meeting_button);
         requestQueue = Volley.newRequestQueue(this);
-        meetingsListView = (ListView) findViewById(R.id.meetingsListView);
+        //meetingsListView = (ListView) findViewById(R.id.meetingsListView);
 
         /**meetingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +111,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadMeetings() {
+        meetingsRecyclerView = (RecyclerView) findViewById(R.id.meetingsRecyclerView);
+        RecyclerAdapter adapter = new RecyclerAdapter(this, meetings);
+        meetingsRecyclerView.setAdapter(adapter);
+
+        LinearLayoutManager mLinearLayoutManagerVertical = new LinearLayoutManager(this);
+        mLinearLayoutManagerVertical.setOrientation(LinearLayoutManager.VERTICAL);
+        meetingsRecyclerView.setLayoutManager(mLinearLayoutManagerVertical);
+
+        meetingsRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+    }
+
+    /**private void loadMeetings() {
 
         List<String> values = new ArrayList<String>();
 
@@ -116,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
         meetingsListView.setAdapter(adapter);
 
-    }
+    }**/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
