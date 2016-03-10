@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -26,7 +26,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button meetingButton;
+    private ListView meetingsListView;
+    private List<Meeting> meetings = new ArrayList<Meeting>();
     private List<Contact> contacts = new ArrayList<Contact>();
     private String requestURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/56df0386e4b054b0e40cd6fc/contacts/all";
     RequestQueue requestQueue;
@@ -36,18 +37,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        meetingButton = (Button) findViewById(R.id.meeting_button);
+        // meetingButton = (Button) findViewById(R.id.meeting_button);
         requestQueue = Volley.newRequestQueue(this);
+        meetingsListView = (ListView) findViewById(R.id.meetingsListView);
 
-        meetingButton.setOnClickListener(new View.OnClickListener() {
+        /**meetingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent meetingDetailsActivity = new Intent(v.getContext(), MeetingDetailsActivity.class);
                 startActivity(meetingDetailsActivity);
             }
-        });
+        }); **/
 
         loadContacts();
+        loadMeetings();
     }
 
     @Override
@@ -63,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.organize_meeting_item:
                 Intent meetingDetailsActivity = new Intent(this, MeetingDetailsActivity.class);
-                startActivity(meetingDetailsActivity);
+                startActivityForResult(meetingDetailsActivity, 2);
                 return true;
             case R.id.display_contacts_item:
                 Intent displayContactsIntent = new Intent(this, ListContactsActivity.class);
@@ -101,5 +104,30 @@ public class MainActivity extends AppCompatActivity {
         requestQueue.add(request);
     }
 
+    private void loadMeetings() {
 
+        List<String> values = new ArrayList<String>();
+
+        for (Meeting meeting : meetings) {
+            values.add(meeting.getSubject());
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, values);
+
+        meetingsListView.setAdapter(adapter);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Serializable extra = data.getSerializableExtra("Meeting");
+        if (extra != null){
+            Meeting newMeeting = (Meeting) extra;
+            meetings.add(newMeeting);
+        }
+
+        loadMeetings();
+
+    }
 }

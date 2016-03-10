@@ -12,9 +12,17 @@ public class Meeting implements Serializable {
 
     private String subject;
     private Date date;
-    private Time time;
+    //private Time time;
     private String location;
     private List<Contact> invitedContacts;
+
+    public Meeting(String subject, Date date, String location, List<Contact> invitedContacts) {
+        this.subject = subject;
+        this.date = date;
+        //this.time = time;
+        this.location = location;
+        this.invitedContacts = invitedContacts;
+    }
 
     public String getSubject() { return subject; }
 
@@ -24,9 +32,9 @@ public class Meeting implements Serializable {
 
     public void setDate(Date date) { this.date = date; }
 
-    public Time getTime() { return time; }
+    // public Time getTime() { return time; }
 
-    public void setTime(Time time) { this.time = time; }
+    // public void setTime(Time time) { this.time = time; }
 
     public String getLocation() { return location; }
 

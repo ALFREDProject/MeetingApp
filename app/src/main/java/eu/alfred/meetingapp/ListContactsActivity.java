@@ -12,7 +12,6 @@ import java.util.List;
 public class ListContactsActivity extends AppCompatActivity {
 
     private ListView contactsListView;
-    // 56dd6bb2e4b074fe33fd8d03
     private List<String> contactNames = new ArrayList<String>();
 
     @Override
