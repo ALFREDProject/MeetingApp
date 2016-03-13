@@ -20,19 +20,28 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/meeting_subject"
-            android:id="@+id/meetingSubjectTextView" />
+            android:id="@+id/meetingSubjectTextView"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/location"
-            android:id="@+id/meetingLocationTextView" />
+            android:id="@+id/meetingLocationTextView"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Meeting Date"
-            android:id="@+id/meetingDateTextView" />
+            android:id="@+id/meetingDateTextView"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp" />
 
 
     </LinearLayout>

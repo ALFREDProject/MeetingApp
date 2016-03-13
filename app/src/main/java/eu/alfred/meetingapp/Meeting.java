@@ -5,24 +5,25 @@ import java.sql.Time;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by deniz.coskun on 08.03.16.
- */
 public class Meeting implements Serializable {
 
+    private int _id;
     private String subject;
     private Date date;
-    //private Time time;
     private String location;
     private List<Contact> invitedContacts;
 
     public Meeting(String subject, Date date, String location, List<Contact> invitedContacts) {
         this.subject = subject;
         this.date = date;
-        //this.time = time;
         this.location = location;
         this.invitedContacts = invitedContacts;
+
     }
+
+    public int get_id() { return _id; }
+
+    public void set_id(int _id) { this._id = _id; }
 
     public String getSubject() { return subject; }
 
@@ -31,10 +32,6 @@ public class Meeting implements Serializable {
     public Date getDate() { return date; }
 
     public void setDate(Date date) { this.date = date; }
-
-    // public Time getTime() { return time; }
-
-    // public void setTime(Time time) { this.time = time; }
 
     public String getLocation() { return location; }
 

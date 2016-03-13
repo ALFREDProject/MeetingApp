@@ -32,6 +32,7 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
     private Button inviteContactsButton;
     private List<Contact> contactsToinvite = new ArrayList<Contact>();
     private int mYear, mMonth, mDay, mHour, mMinute;
+    MyDBHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,8 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
         locationEditText = (EditText) findViewById(R.id.locationEditText);
         addContactsButton = (Button) findViewById(R.id.addContactsButton);
         inviteContactsButton = (Button) findViewById(R.id.inviteContactsButton);
+
+        dbHandler = new MyDBHandler(this, null, null, 1);
 
         datePickerEditText.setOnClickListener(this);
         timePickerEditText.setOnClickListener(this);
@@ -113,7 +116,8 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
 
              Intent returnIntent = new Intent();
              Meeting meeting = new Meeting(subjectEditText.getText().toString(), editTextToDate(datePickerEditText, timePickerEditText), locationEditText.getText().toString(), contactsToinvite);
-             returnIntent.putExtra("Meeting", meeting);
+             dbHandler.addMeeting(meeting);
+             //returnIntent.putExtra("Meeting", meeting);
              setResult(RESULT_OK, returnIntent);
              finish();
          }
@@ -123,7 +127,6 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
 
     private Date editTextToDate(EditText dateEditText, EditText timeEditText) {
 
-        //String dateString = dateEditText.getText().toString();
         String dateTimeString = dateEditText.getText().toString() + " " + timeEditText.getText().toString();
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
         Date dateObject = null;

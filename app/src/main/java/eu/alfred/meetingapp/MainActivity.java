@@ -31,32 +31,24 @@ import eu.alfred.meetingapp.adapter.RecyclerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-    //private ListView meetingsListView;
-    private List<Meeting> meetings = new ArrayList<Meeting>();
+    //private List<Meeting> meetings = new ArrayList<Meeting>();
     private List<Contact> contacts = new ArrayList<Contact>();
     private RecyclerView meetingsRecyclerView;
     private String requestURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/56df0386e4b054b0e40cd6fc/contacts/all";
     RequestQueue requestQueue;
+    MyDBHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // meetingButton = (Button) findViewById(R.id.meeting_button);
         requestQueue = Volley.newRequestQueue(this);
-        //meetingsListView = (ListView) findViewById(R.id.meetingsListView);
-
-        /**meetingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent meetingDetailsActivity = new Intent(v.getContext(), MeetingDetailsActivity.class);
-                startActivity(meetingDetailsActivity);
-            }
-        }); **/
+        dbHandler = new MyDBHandler(this, null, null, 1);
 
         loadContacts();
         loadMeetings();
+        //loadMeetings();
     }
 
     @Override
@@ -73,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.organize_meeting_item:
                 Intent meetingDetailsActivity = new Intent(this, MeetingDetailsActivity.class);
                 startActivityForResult(meetingDetailsActivity, 2);
+                //Intent i = new Intent(this, MeetingDetailsActivity.class);
+                //startActivity(i);
                 return true;
             case R.id.display_contacts_item:
                 Intent displayContactsIntent = new Intent(this, ListContactsActivity.class);
@@ -112,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadMeetings() {
         meetingsRecyclerView = (RecyclerView) findViewById(R.id.meetingsRecyclerView);
-        RecyclerAdapter adapter = new RecyclerAdapter(this, meetings);
+        //meetings = dbHandler.getDBMeetings();
+        RecyclerAdapter adapter = new RecyclerAdapter(this, dbHandler.getDBMeetings());
         meetingsRecyclerView.setAdapter(adapter);
 
         LinearLayoutManager mLinearLayoutManagerVertical = new LinearLayoutManager(this);
@@ -123,29 +118,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /**private void loadMeetings() {
-
-        List<String> values = new ArrayList<String>();
-
-        for (Meeting meeting : meetings) {
-            values.add(meeting.getSubject());
-        }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, values);
-
-        meetingsListView.setAdapter(adapter);
-
-    }**/
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        Serializable extra = data.getSerializableExtra("Meeting");
+        /** Serializable extra = data.getSerializableExtra("Meeting");
         if (extra != null){
             Meeting newMeeting = (Meeting) extra;
             meetings.add(newMeeting);
-        }
+        } **/
 
+        //loadMeetings();
         loadMeetings();
 
     }
