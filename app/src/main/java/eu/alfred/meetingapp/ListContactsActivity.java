@@ -23,6 +23,7 @@ public class ListContactsActivity extends AppCompatActivity {
     private List<Contact> contacts = new ArrayList<Contact>();
     private List<String> contactNames = new ArrayList<String>();
     private List<Contact> invitedContacts = new ArrayList<Contact>();
+    private String source;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,7 @@ public class ListContactsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list_contacts);
 
         contactsListView = (ListView) findViewById(R.id.contactsListView);
+        source = getIntent().getStringExtra("Source");
         Serializable extra = getIntent().getSerializableExtra("Contacts");
         if (extra != null) {
             contacts = (ArrayList<Contact>) extra;
@@ -69,10 +71,18 @@ public class ListContactsActivity extends AppCompatActivity {
                 public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                     switch(item.getItemId()) {
                         case R.id.add_to_invited_list:
-                            Intent returnIntent = new Intent();
-                            returnIntent.putExtra("InvitedContacts", (Serializable) invitedContacts);
-                            setResult(RESULT_OK, returnIntent);
-                            finish();
+                            if (source.equals("main")) {
+                                Intent meetingIntent = new Intent(getApplicationContext(), MeetingDetailsActivity.class);
+                                meetingIntent.putExtra("InvitedContacts", (Serializable) invitedContacts);
+                                startActivity(meetingIntent);
+                            }
+                            else {
+                                Intent returnIntent = new Intent();
+                                returnIntent.putExtra("InvitedContacts", (Serializable) invitedContacts);
+                                setResult(RESULT_OK, returnIntent);
+                                finish();
+                            }
+
 
                             //Intent meetingIntent = new Intent(getApplicationContext(), MeetingDetailsActivity.class);
                             //meetingIntent.putExtra("InvitedContacts", (Serializable) invitedContacts);

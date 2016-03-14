@@ -34,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
     //private List<Meeting> meetings = new ArrayList<Meeting>();
     private List<Contact> contacts = new ArrayList<Contact>();
     private RecyclerView meetingsRecyclerView;
-    private String requestURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/56df0386e4b054b0e40cd6fc/contacts/all";
+    private String requestURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/56e6ad24e4b0fadc1367b665/contacts/all";
+    // 56df0386e4b054b0e40cd6fc
     RequestQueue requestQueue;
     MyDBHandler dbHandler;
 
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.display_contacts_item:
                 Intent displayContactsIntent = new Intent(this, ListContactsActivity.class);
                 displayContactsIntent.putExtra("Contacts", (Serializable) contacts);
+                displayContactsIntent.putExtra("Source", "main");
                 startActivity(displayContactsIntent);
                 return true;
             default:

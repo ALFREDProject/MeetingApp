@@ -46,6 +46,9 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
         Serializable extra = getIntent().getSerializableExtra("Contacts");
         if (extra != null) { contacts = (ArrayList<Contact>) extra; }
 
+        Serializable invitedContacts = getIntent().getSerializableExtra("InvitedContacts");
+        if (invitedContacts != null) { this.contactsToinvite = (ArrayList<Contact>) invitedContacts; }
+
         subjectEditText = (EditText) findViewById(R.id.subjectEditText);
         datePickerEditText = (EditText) findViewById(R.id.dateEditText);
         timePickerEditText = (EditText) findViewById(R.id.timeEditText);
@@ -61,17 +64,19 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
         addContactsButton.setOnClickListener(this);
         inviteContactsButton.setOnClickListener(this);
 
-        Contact testContact1 = new Contact("Deniz Coskun", "00491771708328", "Deniz.Coskun@tiekinetix.com");
+        //Contact testContact1 = new Contact("Deniz Coskun", "00491771708328", "Deniz.Coskun@tiekinetix.com");
         //Contact testContact2 = new Contact("Peter Merz", "00491727759581", "Peter.Merz@tiekinetix.com");
         //Contact testContact3 = new Contact("Robert Lill", "004915209119016", "Robert.Lill@tiekinetix.com");
         //Contact testContact4 = new Contact("Arian Kuschki", "004915222619029", "Arian.Kuschki@tiekinetix.com");
 
-        contactsToinvite.add(testContact1);
+        //contactsToinvite.add(testContact1);
         //contactsToinvite.add(testContact2);
         //contactsToinvite.add(testContact3);
         //contactsToinvite.add(testContact4);
 
-        for (Contact contact : contactsToinvite) { contactsToInviteStr.add(contact.getName()); }
+        if (!contactsToinvite.isEmpty()) {
+            for (Contact contact : contactsToinvite) { contactsToInviteStr.add(contact.getName()); }
+        }
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contactsToInviteStr);
         invitedContactsListView.setAdapter(adapter);
 
@@ -118,6 +123,7 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
 
              Intent listContactsIntent = new Intent(this, ListContactsActivity.class);
              listContactsIntent.putExtra("Contacts", (Serializable) contacts);
+             listContactsIntent.putExtra("Source", "meeting");
              startActivityForResult(listContactsIntent, 1);
 
          }
