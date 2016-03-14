@@ -1,4 +1,11 @@
 # ALFRED User Story 078
+
+## Found bugs
+
+- User can add same contact multiple times to the invited list
+- If users first choose contacts first and create a meeting, they won't be redirected to the main activity
+- Meeting datetimes are not displayed correctly in the main activity (probably a convert error from db to text)
+
 ## As an older person I would like to use ALFRED to organize a meeting with group of friends at a certain place
 
 This user story has to be implemented as an Android-App, using Alfred Android library 
