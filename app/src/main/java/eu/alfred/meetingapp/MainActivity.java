@@ -63,15 +63,16 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.organize_meeting_item:
-                Intent meetingDetailsActivity = new Intent(this, MeetingDetailsActivity.class);
-                startActivityForResult(meetingDetailsActivity, 2);
+                Intent meetingDetailsIntent = new Intent(this, MeetingDetailsActivity.class);
+                meetingDetailsIntent.putExtra("Contacts", (Serializable) contacts);
+                startActivityForResult(meetingDetailsIntent, 2);
                 //Intent i = new Intent(this, MeetingDetailsActivity.class);
                 //startActivity(i);
                 return true;
             case R.id.display_contacts_item:
                 Intent displayContactsIntent = new Intent(this, ListContactsActivity.class);
                 displayContactsIntent.putExtra("Contacts", (Serializable) contacts);
-                startActivityForResult(displayContactsIntent, 1);
+                startActivity(displayContactsIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

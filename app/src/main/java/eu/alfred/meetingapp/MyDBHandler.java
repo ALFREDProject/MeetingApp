@@ -105,24 +105,6 @@ public class MyDBHandler extends SQLiteOpenHelper  {
             } while (c.moveToNext());
         }
 
-        /**
-        while (!c.isAfterLast()) {
-            if(c.getString(c.getColumnIndex(COLUMN_SUBJECT)) != null) {
-
-                String subject = c.getString(c.getColumnIndex(COLUMN_SUBJECT));
-                Date date = new Date(c.getLong(c.getColumnIndex(COLUMN_DATE)) * 1000);
-                String location = c.getString(c.getColumnIndex(COLUMN_LOCATION));
-                String contacts = c.getString(c.getColumnIndex(COLUMN_CONTACTS));
-
-                Log.d("Contact: ", subject + " " + date.toString() + " " + location + " " + contacts);
-
-                //Gson gson = new Gson();
-                //JSONObject contacts = new JSONObject(contactsString);
-                //List<Contact> invitedContacts = gson.fromJson(contacts, type);
-                //Meeting meeting = new Meeting(subject, date, location, invitedContacts);
-                //meetings.add(meeting);
-            }
-        }  **/
         db.close();
         return meetings;
 

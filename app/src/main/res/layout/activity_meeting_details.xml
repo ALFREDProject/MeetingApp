@@ -83,21 +83,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
-                android:lines="4"
+                android:lines="2"
                 android:id="@+id/locationEditText" />
         </LinearLayout>
 
-        <Button
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/add_contacts"
-            android:id="@+id/addContactsButton" />
+            android:layout_height="wrap_content">
 
-        <Button
-            android:layout_width="match_parent"
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/add_contacts"
+                android:id="@+id/addContactsButton"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/invite"
+                android:id="@+id/inviteContactsButton"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/invite"
-            android:id="@+id/inviteContactsButton" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/invited_list"
+            android:id="@+id/invitedListTextView" />
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/invitedContactsListView" />
 
     </LinearLayout>
 
