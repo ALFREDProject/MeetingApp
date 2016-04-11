@@ -2,4 +2,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/organize_meeting_item" android:title="@string/organize_meeting" />
     <item android:id="@+id/display_contacts_item" android:title="@string/contacts" />
+    <item android:id="@+id/logout_item" android:title="@string/logout" />
 </menu>

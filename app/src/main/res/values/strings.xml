@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Meeting App</string>
+    <string name="app_name">ALFRED Meetings</string>
     <string name="organize_meeting">Organize a Meeting</string>
     <string name="select_date">Select Date:</string>
     <string name="select_time">Select Time:</string>
@@ -10,4 +10,8 @@
     <string name="meeting_subject">Subject</string>
     <string name="add_to_invited">Add</string>
     <string name="invited_list">Contacts to invite</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="logout">Logout</string>
 </resources>

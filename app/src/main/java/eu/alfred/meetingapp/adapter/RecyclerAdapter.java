@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Date;
 import java.util.List;
 
 import eu.alfred.meetingapp.Meeting;
@@ -60,7 +61,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Meetin
         public void setData(Meeting meeting, int position) {
             this.meetingSubjectTextView.setText(meeting.getSubject());
             this.meetingLocationTextView.setText(meeting.getLocation());
-            this.meetingDateTextView.setText(meeting.getDate().toString());
+            Date date = new Date(meeting.getDate());
+            this.meetingDateTextView.setText(date.toString());
             this.meeting = meeting;
         }
     }

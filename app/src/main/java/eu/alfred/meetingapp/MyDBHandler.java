@@ -14,6 +14,9 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,7 +42,7 @@ public class MyDBHandler extends SQLiteOpenHelper  {
         String query = "CREATE TABLE " + TABLE_MEETINGS + "(" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_SUBJECT + " TEXT, " +
-                COLUMN_DATE + " BIGINT, " +
+                COLUMN_DATE + " TEXT, " +
                 COLUMN_LOCATION + " TEXT, " +
                 COLUMN_CONTACTS + " TEXT " +
                 ");";
@@ -63,7 +66,8 @@ public class MyDBHandler extends SQLiteOpenHelper  {
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_SUBJECT, meeting.getSubject());
-        values.put(COLUMN_DATE, meeting.getDate().getTime());
+        Log.d("Db add meeting", String.valueOf(meeting.getDate()));
+        values.put(COLUMN_DATE, meeting.getDate());
         values.put(COLUMN_LOCATION, meeting.getLocation());
         values.put(COLUMN_CONTACTS, contacts);
 
@@ -79,28 +83,28 @@ public class MyDBHandler extends SQLiteOpenHelper  {
         List<Meeting> meetings = new ArrayList<Meeting>();
         Type type = new TypeToken<List<Contact>>() {
         }.getType();
-
+        long now = new Date().getTime();
         SQLiteDatabase db = getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_MEETINGS;
 
         // Create a cursor and move it to the first row in the results
         Cursor c = db.rawQuery(query, null);
-        //c.moveToFirst();
 
         if (c.moveToFirst()) {
             do {
-                String subject = c.getString(c.getColumnIndex(COLUMN_SUBJECT));
-                Date date = new Date(c.getLong(c.getColumnIndex(COLUMN_DATE)) * 1000);
-                String location = c.getString(c.getColumnIndex(COLUMN_LOCATION));
-                String contacts = c.getString(c.getColumnIndex(COLUMN_CONTACTS));
-
-                Log.d("Contact: ", subject + " " + date.toString() + " " + location + " " + contacts);
-
-                Gson gson = new Gson();
-                List<Contact> invitedContacts = gson.fromJson(contacts, type);
-                Meeting meeting = new Meeting(subject, date, location, invitedContacts);
-                Log.d("Meeting created:", meeting.toString());
-                meetings.add(meeting);
+                long unixDate = Long.valueOf(c.getString(c.getColumnIndex(COLUMN_DATE))).longValue();
+                if(unixDate > now) {
+                    String subject = c.getString(c.getColumnIndex(COLUMN_SUBJECT));
+                    //Log.d("DB date string", String.valueOf(unixDate));
+                    String location = c.getString(c.getColumnIndex(COLUMN_LOCATION));
+                    String contacts = c.getString(c.getColumnIndex(COLUMN_CONTACTS));
+                    //Log.d("Contact: ", subject + " " + unixDate + " " + location + " " + contacts);
+                    Gson gson = new Gson();
+                    List<Contact> invitedContacts = gson.fromJson(contacts, type);
+                    Meeting meeting = new Meeting(subject, unixDate, location, invitedContacts);
+                    //Log.d("Meeting created:", meeting.toString());
+                    meetings.add(meeting);
+                }
 
             } while (c.moveToNext());
         }

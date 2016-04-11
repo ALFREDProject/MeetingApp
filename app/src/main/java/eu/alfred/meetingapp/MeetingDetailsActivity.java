@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import android.widget.TimePicker;
 import android.telephony.SmsManager;
 
 import java.io.Serializable;
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,17 +26,15 @@ import java.util.List;
 
 public class MeetingDetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText subjectEditText;
-    private EditText datePickerEditText;
-    private EditText timePickerEditText;
-    private EditText locationEditText;
-    private Button addContactsButton;
-    private Button inviteContactsButton;
+    private EditText subjectEditText, datePickerEditText, timePickerEditText, locationEditText;
+    private Button addContactsButton, inviteContactsButton;
     private ListView invitedContactsListView;
     private List<Contact> contacts = new ArrayList<Contact>();
     private List<Contact> contactsToinvite = new ArrayList<Contact>();
     private List<String> contactsToInviteStr = new ArrayList<String>();
     private int mYear, mMonth, mDay, mHour, mMinute;
+    private long meetingDate;
+
     MyDBHandler dbHandler;
     ArrayAdapter<String> adapter;
 
@@ -64,16 +64,6 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
         addContactsButton.setOnClickListener(this);
         inviteContactsButton.setOnClickListener(this);
 
-        //Contact testContact1 = new Contact("Deniz Coskun", "00491771708328", "Deniz.Coskun@tiekinetix.com");
-        //Contact testContact2 = new Contact("Peter Merz", "00491727759581", "Peter.Merz@tiekinetix.com");
-        //Contact testContact3 = new Contact("Robert Lill", "004915209119016", "Robert.Lill@tiekinetix.com");
-        //Contact testContact4 = new Contact("Arian Kuschki", "004915222619029", "Arian.Kuschki@tiekinetix.com");
-
-        //contactsToinvite.add(testContact1);
-        //contactsToinvite.add(testContact2);
-        //contactsToinvite.add(testContact3);
-        //contactsToinvite.add(testContact4);
-
         if (!contactsToinvite.isEmpty()) {
             for (Contact contact : contactsToinvite) { contactsToInviteStr.add(contact.getName()); }
         }
@@ -98,6 +88,7 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
                          @Override
                          public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                              datePickerEditText.setText(dayOfMonth + "." + (monthOfYear +1) + "." + year);
+
                          }
                      }, mYear, mMonth, mDay);
              datePickerDialog.show();
@@ -122,7 +113,7 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
          if (v == addContactsButton) {
 
              Intent listContactsIntent = new Intent(this, ListContactsActivity.class);
-             listContactsIntent.putExtra("Contacts", (Serializable) contacts);
+             //listContactsIntent.putExtra("Contacts", (Serializable) contacts);
              listContactsIntent.putExtra("Source", "meeting");
              startActivityForResult(listContactsIntent, 1);
 
@@ -133,27 +124,31 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
              // TODO check if the intived contacts list is empty. Alert if empty.
 
              Intent returnIntent = new Intent();
-             Meeting meeting = new Meeting(subjectEditText.getText().toString(), editTextToDate(datePickerEditText, timePickerEditText), locationEditText.getText().toString(), contactsToinvite);
-             sendInvitations(meeting.getSubject(), meeting.getDate(), meeting.getLocation(), meeting.getInvitedContacts());
+             Meeting meeting = new Meeting(subjectEditText.getText().toString(), getDate(datePickerEditText, timePickerEditText), locationEditText.getText().toString(), contactsToinvite);
+             //sendInvitations(meeting.getSubject(), meeting.getDate(), meeting.getLocation(), meeting.getInvitedContacts());
              dbHandler.addMeeting(meeting);
              setResult(RESULT_OK, returnIntent);
              finish();
+             //editTextToDate(datePickerEditText, timePickerEditText);
          }
 
      }
 
-    private Date editTextToDate(EditText dateEditText, EditText timeEditText) {
+    private long getDate(EditText dateEditText, EditText timeEditText) {
 
         String dateTimeString = dateEditText.getText().toString() + " " + timeEditText.getText().toString();
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-        Date dateObject = null;
         try {
-            dateObject = sdf.parse(dateTimeString);
+            Date date = sdf.parse(dateTimeString);
+            meetingDate = date.getTime();
+            //Date newDate = new Date(unixtime);
+            //Log.d("converted time", newDate.toString());
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return dateObject;
-
+        //Log.d("Date:", sdf.format(date));
+        //Log.d("Date Unix", String.valueOf(date.getTime()));
+        return meetingDate;
     }
 
     private void sendInvitations(String subject, Date date, String location, List<Contact> contactsToinvite) {
@@ -164,7 +159,6 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
         for (Contact contact : contactsToinvite) {
             sms.sendTextMessage(contact.getPhone(), null, message, null, null);
         }
-
     }
 
     @Override

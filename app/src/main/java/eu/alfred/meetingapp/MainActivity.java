@@ -1,6 +1,9 @@
 package eu.alfred.meetingapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -9,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -31,25 +35,40 @@ import eu.alfred.meetingapp.adapter.RecyclerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-    //private List<Meeting> meetings = new ArrayList<Meeting>();
     private List<Contact> contacts = new ArrayList<Contact>();
     private RecyclerView meetingsRecyclerView;
-    private String requestURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/56e6ad24e4b0fadc1367b665/contacts/all";
+    private String requestURL, userId;
+    private FloatingActionButton fab;
     // 56df0386e4b054b0e40cd6fc
-    RequestQueue requestQueue;
-    MyDBHandler dbHandler;
+    // 56e6ad24e4b0fadc1367b665
+    private RequestQueue requestQueue;
+    private MyDBHandler dbHandler;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        userId = preferences.getString("id", "");
+        Log.d("Preferences id", userId);
         requestQueue = Volley.newRequestQueue(this);
         dbHandler = new MyDBHandler(this, null, null, 1);
 
         loadContacts();
         loadMeetings();
-        //loadMeetings();
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent meetingDetailsIntent = new Intent(getApplicationContext(), MeetingDetailsActivity.class);
+                meetingDetailsIntent.putExtra("Contacts", (Serializable) contacts);
+                startActivityForResult(meetingDetailsIntent, 2);
+            }
+        });
+
     }
 
     @Override
@@ -72,9 +91,17 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.display_contacts_item:
                 Intent displayContactsIntent = new Intent(this, ListContactsActivity.class);
-                displayContactsIntent.putExtra("Contacts", (Serializable) contacts);
+                //displayContactsIntent.putExtra("Contacts", (Serializable) contacts);
                 displayContactsIntent.putExtra("Source", "main");
                 startActivity(displayContactsIntent);
+                return true;
+            case R.id.logout_item:
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.clear();
+                editor.commit();
+                Intent goToLoginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(goToLoginIntent);
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -84,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadContacts() {
 
+        requestURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/" + userId + "/contacts/all";
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {

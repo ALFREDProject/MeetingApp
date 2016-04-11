@@ -9,11 +9,11 @@ public class Meeting implements Serializable {
 
     private int _id;
     private String subject;
-    private Date date;
+    private long date;
     private String location;
     private List<Contact> invitedContacts;
 
-    public Meeting(String subject, Date date, String location, List<Contact> invitedContacts) {
+    public Meeting(String subject, long date, String location, List<Contact> invitedContacts) {
         this.subject = subject;
         this.date = date;
         this.location = location;
@@ -29,9 +29,9 @@ public class Meeting implements Serializable {
 
     public void setSubject(String subject) { this.subject = subject; }
 
-    public Date getDate() { return date; }
+    public long getDate() { return date; }
 
-    public void setDate(Date date) { this.date = date; }
+    public void setDate(long date) { this.date = date; }
 
     public String getLocation() { return location; }
 
