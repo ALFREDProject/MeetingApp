@@ -34,3 +34,8 @@ dependencies {
     compile 'com.android.support:cardview-v7:23.1.1'
     //compile 'com.google.code.gson:gson:2.2.4'
 }
+android {
+    lintOptions {
+        abortOnError false
+    }
+}
