@@ -2,10 +2,9 @@ package eu.alfred.meetingapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -30,7 +29,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListContactsActivity extends AppCompatActivity {
+public class ListContactsActivity extends FragmentActivity {
 
     private ListView contactsListView;
     private List<Contact> contacts = new ArrayList<Contact>();

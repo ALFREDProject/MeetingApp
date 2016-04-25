@@ -3,8 +3,9 @@ package eu.alfred.meetingapp;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -13,10 +14,9 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TimePicker;
-import android.telephony.SmsManager;
 
 import java.io.Serializable;
-import java.text.Format;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class MeetingDetailsActivity extends AppCompatActivity implements View.OnClickListener {
+public class MeetingDetailsActivity extends FragmentActivity implements View.OnClickListener {
 
     private EditText subjectEditText, datePickerEditText, timePickerEditText, locationEditText;
     private Button addContactsButton, inviteContactsButton;
@@ -43,12 +43,6 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meeting_details);
 
-        Serializable extra = getIntent().getSerializableExtra("Contacts");
-        if (extra != null) { contacts = (ArrayList<Contact>) extra; }
-
-        Serializable invitedContacts = getIntent().getSerializableExtra("InvitedContacts");
-        if (invitedContacts != null) { this.contactsToinvite = (ArrayList<Contact>) invitedContacts; }
-
         subjectEditText = (EditText) findViewById(R.id.subjectEditText);
         datePickerEditText = (EditText) findViewById(R.id.dateEditText);
         timePickerEditText = (EditText) findViewById(R.id.timeEditText);
@@ -63,6 +57,28 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
         timePickerEditText.setOnClickListener(this);
         addContactsButton.setOnClickListener(this);
         inviteContactsButton.setOnClickListener(this);
+
+        Serializable extra = getIntent().getSerializableExtra("Contacts");
+        if (extra != null) { contacts = (ArrayList<Contact>) extra; }
+
+        Bundle extras = getIntent().getExtras();
+        if (extras == null) { return; }
+        if (extras != null) {
+            subjectEditText.setText(extras.getString("Subject"));
+            locationEditText.setText(extras.getString("Location"));
+            String strDate = extras.getString("Day") + " " + extras.getString("Month") + " " + extras.getString("Year");
+            DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+            try {
+                Date date = (Date) dateFormat.parse(strDate);
+                DateFormat df = new SimpleDateFormat("dd.MM.yyy");
+                String alfredDate = df.format(date);
+                Log.d("Alfred date", date.toString());
+                datePickerEditText.setText(alfredDate);
+            } catch (ParseException e) { e.printStackTrace(); }
+        }
+
+        Serializable invitedContacts = getIntent().getSerializableExtra("InvitedContacts");
+        if (invitedContacts != null) { this.contactsToinvite = (ArrayList<Contact>) invitedContacts; }
 
         if (!contactsToinvite.isEmpty()) {
             for (Contact contact : contactsToinvite) { contactsToInviteStr.add(contact.getName()); }
@@ -129,7 +145,6 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
              dbHandler.addMeeting(meeting);
              setResult(RESULT_OK, returnIntent);
              finish();
-             //editTextToDate(datePickerEditText, timePickerEditText);
          }
 
      }
@@ -141,24 +156,16 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
         try {
             Date date = sdf.parse(dateTimeString);
             meetingDate = date.getTime();
-            //Date newDate = new Date(unixtime);
-            //Log.d("converted time", newDate.toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        //Log.d("Date:", sdf.format(date));
-        //Log.d("Date Unix", String.valueOf(date.getTime()));
+        } catch (ParseException e) { e.printStackTrace(); }
+
         return meetingDate;
     }
 
     private void sendInvitations(String subject, Date date, String location, List<Contact> contactsToinvite) {
         SmsManager sms = SmsManager.getDefault();
-
         String message = "Hi! Let's meet. Date: " + date.toString() + " Location: " + location + ". Sent via ALFRED";
 
-        for (Contact contact : contactsToinvite) {
-            sms.sendTextMessage(contact.getPhone(), null, message, null, null);
-        }
+        for (Contact contact : contactsToinvite) { sms.sendTextMessage(contact.getPhone(), null, message, null, null); }
     }
 
     @Override
@@ -167,12 +174,9 @@ public class MeetingDetailsActivity extends AppCompatActivity implements View.On
         Serializable extra = data.getSerializableExtra("InvitedContacts");
         if (extra != null){
             contactsToinvite = (ArrayList<Contact>) extra;
-
             for (Contact contact : contactsToinvite) { contactsToInviteStr.add(contact.getName()); }
         }
 
-        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contactsToInviteStr);
-        //invitedContactsListView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
     }

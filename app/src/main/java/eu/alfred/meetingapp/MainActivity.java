@@ -21,6 +21,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -30,44 +31,42 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import eu.alfred.api.proxies.interfaces.ICadeCommand;
 import eu.alfred.meetingapp.adapter.RecyclerAdapter;
+import eu.alfred.ui.AppActivity;
+import eu.alfred.ui.CircleButton;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppActivity implements ICadeCommand {
 
     private List<Contact> contacts = new ArrayList<Contact>();
     private RecyclerView meetingsRecyclerView;
-    private String requestURL, userId;
-    private FloatingActionButton fab;
-    // 56df0386e4b054b0e40cd6fc
-    // 56e6ad24e4b0fadc1367b665
+    private String requestURL, userId, loggedUserId;
     private RequestQueue requestQueue;
     private MyDBHandler dbHandler;
     private SharedPreferences preferences;
+
+    final static String CREATE_MEETING = "CreateMeetingAction";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        userId = preferences.getString("id", "");
-        Log.d("Preferences id", userId);
+        loggedUserId = preferences.getString("id", "");
+        if(loggedUserId.isEmpty()){ userId = "56e6c782e1079f764b596c87"; }
+        else { userId = loggedUserId; }
+
         requestQueue = Volley.newRequestQueue(this);
         dbHandler = new MyDBHandler(this, null, null, 1);
 
         loadContacts();
         loadMeetings();
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent meetingDetailsIntent = new Intent(getApplicationContext(), MeetingDetailsActivity.class);
-                meetingDetailsIntent.putExtra("Contacts", (Serializable) contacts);
-                startActivityForResult(meetingDetailsIntent, 2);
-            }
-        });
+        circleButton = (CircleButton) findViewById(R.id.voiceControlBtn);
+        circleButton.setOnTouchListener(new CircleTouchListener());
 
     }
 
@@ -162,4 +161,44 @@ public class MainActivity extends AppCompatActivity {
         loadMeetings();
 
     }
+
+    @Override
+    public void onNewIntent(Intent intent) { super.onNewIntent(intent); }
+
+    @Override
+    public void performAction(String s, Map<String, String> map) {
+        Log.d("Perform Action string", s);
+        Log.d("Perform Action string", map.toString());
+
+        switch (s) {
+            case CREATE_MEETING:
+                Intent alfredMeetingIntent = new Intent(this, MeetingDetailsActivity.class);
+                String subject = (String) map.get("selected_subject");
+                String location = (String) map.get("selected_location");
+                String year = (String) map.get("selected_year");
+                String month = (String) map.get("selected_month");
+                String day = (String) map.get("selected_day");
+                alfredMeetingIntent.putExtra("Subject", subject);
+                alfredMeetingIntent.putExtra("Location", location);
+                alfredMeetingIntent.putExtra("Year", year);
+                alfredMeetingIntent.putExtra("Month", month);
+                alfredMeetingIntent.putExtra("Day", day);
+                startActivity(alfredMeetingIntent);
+                break;
+            default:
+                break;
+        }
+
+        cade.sendActionResult(true);
+    }
+
+    @Override
+    public void performWhQuery(String s, Map<String, String> map) { }
+
+    @Override
+    public void performValidity(String s, Map<String, String> map) { }
+
+    @Override
+    public void performEntityRecognizer(String s, Map<String, String> map) { }
+
 }
