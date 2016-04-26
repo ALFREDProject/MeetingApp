@@ -171,13 +171,17 @@ public class MeetingDetailsActivity extends FragmentActivity implements View.OnC
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        Serializable extra = data.getSerializableExtra("InvitedContacts");
-        if (extra != null){
-            contactsToinvite = (ArrayList<Contact>) extra;
-            for (Contact contact : contactsToinvite) { contactsToInviteStr.add(contact.getName()); }
-        }
+        super.onActivityResult(requestCode, resultCode, data);
 
-        adapter.notifyDataSetChanged();
+        if( resultCode == RESULT_OK) {
+            Serializable extra = data.getSerializableExtra("InvitedContacts");
+            if (extra != null){
+                contactsToinvite = (ArrayList<Contact>) extra;
+                for (Contact contact : contactsToinvite) { contactsToInviteStr.add(contact.getName()); }
+            }
+
+            adapter.notifyDataSetChanged();
+        }
 
     }
 
