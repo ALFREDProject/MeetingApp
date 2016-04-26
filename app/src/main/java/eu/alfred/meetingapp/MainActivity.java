@@ -57,7 +57,8 @@ public class MainActivity extends AppActivity implements ICadeCommand {
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         loggedUserId = preferences.getString("id", "");
         if(loggedUserId.isEmpty()){
-            userId = "56e6c782e1079f764b596c87";
+            //userId = "56e6c782e1079f764b596c87";
+            userId = "56e6f095e4b0fadc1367b66b";
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("id", userId);
             editor.commit();

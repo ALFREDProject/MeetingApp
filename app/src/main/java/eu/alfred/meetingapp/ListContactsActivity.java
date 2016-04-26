@@ -66,8 +66,9 @@ public class ListContactsActivity extends FragmentActivity {
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject contact = response.getJSONObject(i);
                         contacts.add(new Contact(contact.getString("firstName") + " " + contact.getString("lastName"), contact.getString("phone"), contact.getString("email")));
-                        contactNames.add(contact.getString("firstName"));
+                        contactNames.add(contact.getString("firstName") + " x " + contact.getString("alfredUserName"));
                     }
+                    Log.d("Peter Contacts", contactNames.toString());
                     displayContacts();
                 } catch (JSONException e) { e.printStackTrace(); }
             }
