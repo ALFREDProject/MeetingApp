@@ -54,11 +54,14 @@ public class MainActivity extends AppActivity implements ICadeCommand {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getActionBar().setTitle(R.string.upcoming);
+
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         loggedUserId = preferences.getString("id", "");
         if(loggedUserId.isEmpty()){
             //userId = "56e6c782e1079f764b596c87";
-            userId = "56e6f095e4b0fadc1367b66b";
+            //userId = "56e6f095e4b0fadc1367b66b";
+            userId = "571f928be4b0d25de0692ed6";
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("id", userId);
             editor.commit();
