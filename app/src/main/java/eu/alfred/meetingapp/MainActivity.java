@@ -192,7 +192,7 @@ public class MainActivity extends AppActivity implements ICadeCommand {
                 alfredMeetingIntent.putExtra("Year", year);
                 alfredMeetingIntent.putExtra("Month", month);
                 alfredMeetingIntent.putExtra("Day", day);
-                startActivity(alfredMeetingIntent);
+                startActivityForResult(alfredMeetingIntent, 2);
                 break;
             default:
                 break;
