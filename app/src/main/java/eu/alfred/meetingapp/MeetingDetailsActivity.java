@@ -88,8 +88,8 @@ public class MeetingDetailsActivity extends FragmentActivity implements View.OnC
 
         Calendar c = Calendar.getInstance();
         mHour = c.get(Calendar.HOUR_OF_DAY);
-        mHour = c.get(Calendar.MINUTE);
-        timePickerEditText.setText(String.format("%02d:%02d", mHour, mHour));
+        mMinute = c.get(Calendar.MINUTE);
+        timePickerEditText.setText(String.format("%02d:%02d", mHour, mMinute));
 
     }
 
