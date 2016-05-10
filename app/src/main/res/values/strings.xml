@@ -7,7 +7,7 @@
     <string name="location">Location:</string>
     <string name="contacts">Contacts</string>
     <string name="invite">Send invitations!</string>
-    <string name="meeting_subject">Subject</string>
+    <string name="meeting_subject">Subject:</string>
     <string name="add_to_invited">Add</string>
     <string name="invited_list">Contacts to invite</string>
     <string name="prompt_email">Email</string>

@@ -7,7 +7,7 @@
     <string name="location">Plaats:</string>
     <string name="contacts">Contacten</string>
     <string name="invite">Stuur afspraak!</string>
-    <string name="meeting_subject">Opzicht</string>
+    <string name="meeting_subject">Opzicht:</string>
     <string name="add_to_invited">Add</string>
     <string name="invited_list">Toegevoegd contacten</string>
     <string name="prompt_email">Email</string>
