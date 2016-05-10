@@ -97,7 +97,7 @@ public class ListContactsActivity extends FragmentActivity {
                         invitedContacts.remove(contacts.get(position));
                     }
 
-                    mode.setTitle(invitedContacts.size() + " contacts selected");
+                    mode.setTitle(invitedContacts.size() + " " + R.string.contacts_selected);
                 }
 
                 @Override
