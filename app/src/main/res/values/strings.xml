@@ -1,13 +1,13 @@
 <resources>
     <string name="app_name">Meetings</string>
     <string name="organize_meeting">Organize a Meeting</string>
-    <string name="select_date">Select Date:</string>
-    <string name="select_time">Select Time:</string>
+    <string name="select_date">Date</string>
+    <string name="select_time">Time</string>
     <string name="add_contacts">Add Contacts</string>
-    <string name="location">Location:</string>
+    <string name="location">Location</string>
     <string name="contacts">Contacts</string>
     <string name="invite">Send invitations!</string>
-    <string name="meeting_subject">Subject:</string>
+    <string name="meeting_subject">Subject</string>
     <string name="add_to_invited">Add</string>
     <string name="invited_list">Contacts to invite</string>
     <string name="prompt_email">Email</string>
@@ -16,4 +16,6 @@
     <string name="logout">Logout</string>
     <string name="upcoming">Upcoming Events</string>
     <string name="contacts_selected">contacts selected</string>
+    <string name="calendar_message">Automatically added by ALFRED</string>
+    <string name="add_to_calendar">Add to calendar</string>
 </resources>

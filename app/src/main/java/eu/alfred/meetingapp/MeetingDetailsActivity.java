@@ -2,8 +2,12 @@ package eu.alfred.meetingapp;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.v4.app.FragmentActivity;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -13,6 +17,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TimePicker;
 
 import java.io.Serializable;
@@ -23,11 +28,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
+import java.util.TimeZone;
 
 public class MeetingDetailsActivity extends FragmentActivity implements View.OnClickListener {
 
     private EditText subjectEditText, datePickerEditText, timePickerEditText, locationEditText;
     private Button addContactsButton, inviteContactsButton;
+    private Switch calendarSwitch;
     private ListView invitedContactsListView;
     private List<Contact> contacts = new ArrayList<Contact>();
     private List<Contact> contactsToinvite = new ArrayList<Contact>();
@@ -50,6 +58,7 @@ public class MeetingDetailsActivity extends FragmentActivity implements View.OnC
         addContactsButton = (Button) findViewById(R.id.addContactsButton);
         inviteContactsButton = (Button) findViewById(R.id.inviteContactsButton);
         invitedContactsListView = (ListView) findViewById(R.id.invitedContactsListView);
+        calendarSwitch = (Switch) findViewById(R.id.calendarSwitch);
 
         dbHandler = new MyDBHandler(this, null, null, 1);
 
@@ -144,8 +153,32 @@ public class MeetingDetailsActivity extends FragmentActivity implements View.OnC
 
              // TODO check if the intived contacts list is empty. Alert if empty.
 
+             long eventDate = getDate(datePickerEditText, timePickerEditText);
+             String location = locationEditText.getText().toString();
+             String subject = subjectEditText.getText().toString();
+
+             if(calendarSwitch.isChecked()){
+                 ContentResolver cr = this.getContentResolver();
+                 ContentValues values = new ContentValues();
+
+                 values.put(CalendarContract.Events.DTSTART, eventDate);
+                 values.put(CalendarContract.Events.DTEND, eventDate + 3600*1000*2);
+
+                 values.put(CalendarContract.Events.TITLE, subjectEditText.getText().toString());
+                 values.put(CalendarContract.Events.DESCRIPTION, getString(R.string.calendar_message));
+
+                 TimeZone timeZone = TimeZone.getDefault();
+                 values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
+
+                 values.put(CalendarContract.Events.CALENDAR_ID, 1);
+                 values.put(CalendarContract.Events.HAS_ALARM, 1);
+                 values.put(CalendarContract.Events.EVENT_LOCATION, location);
+
+                 Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+             }
+
              Intent returnIntent = new Intent();
-             Meeting meeting = new Meeting(subjectEditText.getText().toString(), getDate(datePickerEditText, timePickerEditText), locationEditText.getText().toString(), contactsToinvite);
+             Meeting meeting = new Meeting(subject, eventDate, location, contactsToinvite);
              //sendInvitations(meeting.getSubject(), meeting.getDate(), meeting.getLocation(), meeting.getInvitedContacts());
              dbHandler.addMeeting(meeting);
              setResult(RESULT_OK, returnIntent);

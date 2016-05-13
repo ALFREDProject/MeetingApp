@@ -1,13 +1,13 @@
 <resources>
     <string name="app_name">Meetings</string>
     <string name="organize_meeting">Nieuwe afspraak</string>
-    <string name="select_date">Datum:</string>
-    <string name="select_time">Tijdstip:</string>
+    <string name="select_date">Datum</string>
+    <string name="select_time">Tijdstip</string>
     <string name="add_contacts">Contactpersonen toevoegen</string>
-    <string name="location">Plaats:</string>
+    <string name="location">Plaats</string>
     <string name="contacts">Contacten</string>
     <string name="invite">Stuur afspraak!</string>
-    <string name="meeting_subject">Opzicht:</string>
+    <string name="meeting_subject">Opzicht</string>
     <string name="add_to_invited">Add</string>
     <string name="invited_list">Toegevoegd contacten</string>
     <string name="prompt_email">Email</string>
@@ -16,4 +16,6 @@
     <string name="logout">Uitloggen</string>
     <string name="upcoming">Komende bijeenkomsten</string>
     <string name="contacts_selected">geselecteerde contactpersonen</string>
+    <string name="calendar_message">Automatically added by ALFRED</string>
+    <string name="add_to_calendar">Add to calendar</string>
 </resources>
