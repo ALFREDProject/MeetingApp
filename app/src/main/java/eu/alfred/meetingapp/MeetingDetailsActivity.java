@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.TimeZone;
 
 public class MeetingDetailsActivity extends FragmentActivity implements View.OnClickListener {
@@ -171,8 +170,10 @@ public class MeetingDetailsActivity extends FragmentActivity implements View.OnC
                  values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
 
                  values.put(CalendarContract.Events.CALENDAR_ID, 1);
-                 values.put(CalendarContract.Events.HAS_ALARM, 1);
+                 values.put(CalendarContract.Events.HAS_ALARM, true);
                  values.put(CalendarContract.Events.EVENT_LOCATION, location);
+
+                 //values.put(CalendarContract.Events.);
 
                  Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
              }

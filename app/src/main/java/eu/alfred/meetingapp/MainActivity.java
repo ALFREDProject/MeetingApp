@@ -75,7 +75,7 @@ public class MainActivity extends AppActivity implements ICadeCommand {
         loadMeetings();
 
         circleButton = (CircleButton) findViewById(R.id.voiceControlBtn);
-        circleButton.setOnTouchListener(new CircleTouchListener());
+        circleButton.setOnTouchListener(new MicrophoneTouchListener());
 
     }
 

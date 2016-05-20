@@ -17,5 +17,5 @@
     <string name="upcoming">Anstehende Termine</string>
     <string name="contacts_selected">Kontakte ausgewählt</string>
     <string name="calendar_message">Automatically added by ALFRED</string>
-    <string name="add_to_calendar">Add to calendar</string>
+    <string name="add_to_calendar">zum Kalender hinzufügen</string>
 </resources>
