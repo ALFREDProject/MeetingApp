@@ -13,8 +13,8 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Mot de passe</string>
     <string name="action_sign_in_short">S\'inscrire</string>
-    <string name="logout">Se déconnecter</string>
-    <string name="upcoming">rendez-vous prévus</string>
+    <string name="logout">Déconnexion</string>
+    <string name="upcoming">Rendez-vous prévus</string>
     <string name="contacts_selected">contacts sélectionnés</string>
     <string name="calendar_message">Automatically added by ALFRED</string>
     <string name="add_to_calendar">Ajouter au calendrier</string>
