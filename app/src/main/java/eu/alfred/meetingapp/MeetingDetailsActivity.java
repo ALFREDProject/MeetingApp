@@ -30,6 +30,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import eu.alfred.api.personalization.model.Contact;
+
 public class MeetingDetailsActivity extends FragmentActivity implements View.OnClickListener {
 
     private EditText subjectEditText, datePickerEditText, timePickerEditText, locationEditText;
@@ -89,7 +91,7 @@ public class MeetingDetailsActivity extends FragmentActivity implements View.OnC
         if (invitedContacts != null) { this.contactsToinvite = (ArrayList<Contact>) invitedContacts; }
 
         if (!contactsToinvite.isEmpty()) {
-            for (Contact contact : contactsToinvite) { contactsToInviteStr.add(contact.getName()); }
+            for (Contact contact : contactsToinvite) { contactsToInviteStr.add(contact.getFirstName() + " " + contact.getLastName()); }
         }
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contactsToInviteStr);
         invitedContactsListView.setAdapter(adapter);
@@ -216,7 +218,7 @@ public class MeetingDetailsActivity extends FragmentActivity implements View.OnC
             Serializable extra = data.getSerializableExtra("InvitedContacts");
             if (extra != null){
                 contactsToinvite = (ArrayList<Contact>) extra;
-                for (Contact contact : contactsToinvite) { contactsToInviteStr.add(contact.getName()); }
+                for (Contact contact : contactsToinvite) { contactsToInviteStr.add(contact.getFirstName() + " " + contact.getLastName()); }
             }
 
             adapter.notifyDataSetChanged();

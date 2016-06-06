@@ -2,62 +2,59 @@ package eu.alfred.meetingapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import eu.alfred.api.PersonalAssistant;
+import eu.alfred.api.personalization.client.ContactDto;
+import eu.alfred.api.personalization.client.ContactMapper;
+import eu.alfred.api.personalization.model.Contact;
+import eu.alfred.api.personalization.webservice.PersonalizationManager;
 import eu.alfred.api.proxies.interfaces.ICadeCommand;
 import eu.alfred.meetingapp.adapter.RecyclerAdapter;
+import eu.alfred.meetingapp.helper.PersonalAssistantProvider;
+import eu.alfred.meetingapp.helper.PersonalizationArrayResponse;
 import eu.alfred.ui.AppActivity;
 import eu.alfred.ui.CircleButton;
 
 public class MainActivity extends AppActivity implements ICadeCommand {
 
     private List<Contact> contacts = new ArrayList<Contact>();
-    private RecyclerView meetingsRecyclerView;
-    private String requestURL, userId, loggedUserId;
-    private RequestQueue requestQueue;
+    private String userId;
     private MyDBHandler dbHandler;
     private SharedPreferences preferences;
 
-    final static String CREATE_MEETING = "CreateMeetingAction";
+    private final static String TAG = "MA:MainActivity";
+    private final static String CREATE_MEETING = "CreateMeetingAction";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getActionBar().setTitle(R.string.upcoming);
+        getActionBar().setTitle(R.string.upcoming); // TODO: use resource
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        loggedUserId = preferences.getString("id", "");
+        String loggedUserId = preferences.getString("id", "");
         if(loggedUserId.isEmpty()){
             //userId = "56e6c782e1079f764b596c87";
             //userId = "56e6f095e4b0fadc1367b66b";
@@ -68,7 +65,6 @@ public class MainActivity extends AppActivity implements ICadeCommand {
         }
         else { userId = loggedUserId; }
 
-        requestQueue = Volley.newRequestQueue(this);
         dbHandler = new MyDBHandler(this, null, null, 1);
 
         loadContacts();
@@ -76,6 +72,9 @@ public class MainActivity extends AppActivity implements ICadeCommand {
 
         circleButton = (CircleButton) findViewById(R.id.voiceControlBtn);
         circleButton.setOnTouchListener(new MicrophoneTouchListener());
+
+        // trigger init
+        PersonalAssistantProvider.getPersonalAssistant(this);
 
     }
 
@@ -119,32 +118,31 @@ public class MainActivity extends AppActivity implements ICadeCommand {
 
     private void loadContacts() {
 
-        requestURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/" + userId + "/contacts/all";
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONArray>() {
+        PersonalAssistant PA = PersonalAssistantProvider.getPersonalAssistant(this);
+        PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
+        PM.retrieveAllUserContacts(userId, new PersonalizationArrayResponse() {
             @Override
-            public void onResponse(JSONArray response) {
-                try {
-                    for (int i = 0; i < response.length(); i++) {
-                        JSONObject contact = response.getJSONObject(i);
-                        contacts.add(new Contact(contact.getString("firstName") + " " + contact.getString("lastName"), contact.getString("phone"), contact.getString("email")));
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            public void OnSuccess(JSONArray a) {
+                Log.i(TAG, "retrieveAllUserContacts succeeded");
 
+                Type type = new TypeToken<ArrayList<ContactDto>>() {}.getType();
+                List<ContactDto> dto = new Gson().fromJson(a.toString(), type);
+
+                for (ContactDto cd : dto) {
+                    Contact contact = ContactMapper.toModel(cd);
+                    contacts.add(contact);
+                }
             }
-        }, new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("VOLLEY", error.getMessage());
+            public void OnError(Exception e) {
+                Log.e(TAG, "retrieveUserProfiles failed", e);
             }
         });
-
-        requestQueue.add(request);
     }
 
     private void loadMeetings() {
-        meetingsRecyclerView = (RecyclerView) findViewById(R.id.meetingsRecyclerView);
+        RecyclerView meetingsRecyclerView = (RecyclerView) findViewById(R.id.meetingsRecyclerView);
         //meetings = dbHandler.getDBMeetings();
         RecyclerAdapter adapter = new RecyclerAdapter(this, dbHandler.getDBMeetings());
         meetingsRecyclerView.setAdapter(adapter);
@@ -182,11 +180,11 @@ public class MainActivity extends AppActivity implements ICadeCommand {
         switch (s) {
             case CREATE_MEETING:
                 Intent alfredMeetingIntent = new Intent(this, MeetingDetailsActivity.class);
-                String subject = (String) map.get("selected_subject");
-                String location = (String) map.get("selected_location");
-                String year = (String) map.get("selected_year");
-                String month = (String) map.get("selected_month");
-                String day = (String) map.get("selected_day");
+                String subject = map.get("selected_subject");
+                String location = map.get("selected_location");
+                String year = map.get("selected_year");
+                String month = map.get("selected_month");
+                String day = map.get("selected_day");
                 alfredMeetingIntent.putExtra("Subject", subject);
                 alfredMeetingIntent.putExtra("Location", location);
                 alfredMeetingIntent.putExtra("Year", year);

@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         applicationId "eu.alfred.meetingapp"
         minSdkVersion 18
-        targetSdkVersion 22
+        targetSdkVersion 21
         versionCode 5
         versionName "5.0"
     }
@@ -27,7 +27,6 @@ repositories{
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile(name:'volley-release', ext:'aar')
     compile(name: 'PersonalAssistantShared-debug', ext: 'aar')
     compile 'com.android.support:design:22.2.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'

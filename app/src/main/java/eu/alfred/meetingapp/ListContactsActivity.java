@@ -14,20 +14,23 @@ import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import eu.alfred.api.PersonalAssistant;
+import eu.alfred.api.personalization.client.ContactDto;
+import eu.alfred.api.personalization.client.ContactMapper;
+import eu.alfred.api.personalization.model.Contact;
+import eu.alfred.api.personalization.webservice.PersonalizationManager;
+import eu.alfred.meetingapp.helper.PersonalAssistantProvider;
+import eu.alfred.meetingapp.helper.PersonalizationArrayResponse;
 
 public class ListContactsActivity extends FragmentActivity {
 
@@ -35,9 +38,9 @@ public class ListContactsActivity extends FragmentActivity {
     private List<Contact> contacts = new ArrayList<Contact>();
     private List<Contact> invitedContacts = new ArrayList<Contact>();
     private List<String> contactNames = new ArrayList<String>();
-    private String requestURL, userId, source;
-    private SharedPreferences preferences;
-    private RequestQueue requestQueue;
+    private String userId, source;
+
+	private final static String TAG = "MA:ListContactsAct";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +48,10 @@ public class ListContactsActivity extends FragmentActivity {
         setContentView(R.layout.activity_list_contacts);
 
         source = getIntent().getStringExtra("Source");
-        Log.d("Source Activity", source);
+        Log.d(TAG, "Source Activity: " + source);
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+	    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         userId = preferences.getString("id", "");
-        requestQueue = Volley.newRequestQueue(this);
         contactsListView = (ListView) findViewById(R.id.contactsListView);
 
         getContacts();
@@ -58,34 +60,37 @@ public class ListContactsActivity extends FragmentActivity {
 
     private void getContacts() {
 
-        requestURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/" + userId + "/contacts/all";
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, requestURL, null, new Response.Listener<JSONArray>() {
+        PersonalAssistant PA = PersonalAssistantProvider.getPersonalAssistant(this);
+        PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
+
+        PM.retrieveAllUserContacts(userId, new PersonalizationArrayResponse() {
             @Override
-            public void onResponse(JSONArray response) {
-                try {
-                    for (int i = 0; i < response.length(); i++) {
-                        JSONObject contact = response.getJSONObject(i);
-                        contacts.add(new Contact(contact.getString("firstName") + " " + contact.getString("lastName"), contact.getString("phone"), contact.getString("email")));
-                        contactNames.add(contact.getString("firstName") + " x " + contact.getString("alfredUserName"));
-                    }
-                    Log.d("Peter Contacts", contactNames.toString());
-                    displayContacts();
-                } catch (JSONException e) { e.printStackTrace(); }
+            public void OnSuccess(JSONArray array) {
+                Log.i(TAG, "retrieveAllUserContacts succeeded");
+
+	            Type type = new TypeToken<ArrayList<ContactDto>>() {}.getType();
+	            List<ContactDto> dto = new Gson().fromJson(array.toString(), type);
+
+	            for (ContactDto cd : dto) {
+		            Contact contact = ContactMapper.toModel(cd);
+		            Log.d(TAG, "Retrieved " + contact);
+
+		            contacts.add(contact);
+		            contactNames.add(contact.getFirstName() + " x " + contact.getAlfredUserName());
+	            }
+
+	            displayContacts();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) { Log.e("VOLLEY", error.getMessage()); }
         });
 
-        requestQueue.add(request);
     }
 
     private void displayContacts() {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contactNames);
         contactsListView.setAdapter(adapter);
-        if(source.contentEquals("meeting")) {
-            Log.d("choice mode", "works!");
+        if (source.contentEquals("meeting")) {
+            Log.d(TAG, "choice mode");
             contactsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
             contactsListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
                 @Override
@@ -108,7 +113,9 @@ public class ListContactsActivity extends FragmentActivity {
                 }
 
                 @Override
-                public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
+                public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                    return false;
+                }
 
                 @Override
                 public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
@@ -120,11 +127,9 @@ public class ListContactsActivity extends FragmentActivity {
                 }
 
                 @Override
-                public void onDestroyActionMode(ActionMode mode) { }
+                public void onDestroyActionMode(ActionMode mode) {
+                }
             });
         }
-
     }
-
-
 }

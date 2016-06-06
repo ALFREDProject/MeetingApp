@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import eu.alfred.api.personalization.model.Contact;
+
 public class MyDBHandler extends SQLiteOpenHelper  {
 
     private static final int DATABASE_VERSION = 1;

@@ -1,9 +1,9 @@
 package eu.alfred.meetingapp;
 
 import java.io.Serializable;
-import java.sql.Time;
-import java.util.Date;
 import java.util.List;
+
+import eu.alfred.api.personalization.model.Contact;
 
 public class Meeting implements Serializable {
 
