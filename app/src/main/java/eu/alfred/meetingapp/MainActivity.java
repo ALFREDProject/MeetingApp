@@ -15,8 +15,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
@@ -25,13 +23,13 @@ import java.util.List;
 import java.util.Map;
 
 import eu.alfred.api.PersonalAssistant;
+import eu.alfred.api.PersonalAssistantConnection;
 import eu.alfred.api.personalization.client.ContactDto;
 import eu.alfred.api.personalization.client.ContactMapper;
 import eu.alfred.api.personalization.model.Contact;
 import eu.alfred.api.personalization.webservice.PersonalizationManager;
 import eu.alfred.api.proxies.interfaces.ICadeCommand;
 import eu.alfred.meetingapp.adapter.RecyclerAdapter;
-import eu.alfred.meetingapp.helper.PersonalAssistantProvider;
 import eu.alfred.meetingapp.helper.PersonalizationArrayResponse;
 import eu.alfred.ui.AppActivity;
 import eu.alfred.ui.CircleButton;
@@ -42,6 +40,7 @@ public class MainActivity extends AppActivity implements ICadeCommand {
     private String userId;
     private MyDBHandler dbHandler;
     private SharedPreferences preferences;
+    private PersonalAssistant PA;
 
     private final static String TAG = "MA:MainActivity";
     private final static String CREATE_MEETING = "CreateMeetingAction";
@@ -54,28 +53,33 @@ public class MainActivity extends AppActivity implements ICadeCommand {
         getActionBar().setTitle(R.string.upcoming); // TODO: use resource
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String loggedUserId = preferences.getString("id", "");
-        if(loggedUserId.isEmpty()){
-            //userId = "56e6c782e1079f764b596c87";
-            //userId = "56e6f095e4b0fadc1367b66b";
-            userId = "571f928be4b0d25de0692ed6";
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("id", userId);
-            editor.commit();
-        }
-        else { userId = loggedUserId; }
+        userId = preferences.getString("id", "");
 
         dbHandler = new MyDBHandler(this, null, null, 1);
 
-        loadContacts();
-        loadMeetings();
+
+        PA = new PersonalAssistant(this);
+
+        PA.setOnPersonalAssistantConnectionListener(new PersonalAssistantConnection() {
+            @Override
+            public void OnConnected() {
+                Log.i(TAG, "PersonalAssistantConnection connected");
+
+                loadContacts();
+                loadMeetings();
+            }
+
+            @Override
+            public void OnDisconnected() {
+                Log.i(TAG, "PersonalAssistantConnection disconnected");
+            }
+        });
+
+        PA.Init();
+
 
         circleButton = (CircleButton) findViewById(R.id.voiceControlBtn);
         circleButton.setOnTouchListener(new MicrophoneTouchListener());
-
-        // trigger init
-        PersonalAssistantProvider.getPersonalAssistant(this);
-
     }
 
     @Override
@@ -118,7 +122,6 @@ public class MainActivity extends AppActivity implements ICadeCommand {
 
     private void loadContacts() {
 
-        PersonalAssistant PA = PersonalAssistantProvider.getPersonalAssistant(this);
         PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
         PM.retrieveAllUserContacts(userId, new PersonalizationArrayResponse() {
             @Override

@@ -25,11 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.alfred.api.PersonalAssistant;
+import eu.alfred.api.PersonalAssistantConnection;
 import eu.alfred.api.personalization.client.ContactDto;
 import eu.alfred.api.personalization.client.ContactMapper;
 import eu.alfred.api.personalization.model.Contact;
 import eu.alfred.api.personalization.webservice.PersonalizationManager;
-import eu.alfred.meetingapp.helper.PersonalAssistantProvider;
 import eu.alfred.meetingapp.helper.PersonalizationArrayResponse;
 
 public class ListContactsActivity extends FragmentActivity {
@@ -39,6 +39,7 @@ public class ListContactsActivity extends FragmentActivity {
     private List<Contact> invitedContacts = new ArrayList<Contact>();
     private List<String> contactNames = new ArrayList<String>();
     private String userId, source;
+    private PersonalAssistant PA;
 
 	private final static String TAG = "MA:ListContactsAct";
 
@@ -54,13 +55,29 @@ public class ListContactsActivity extends FragmentActivity {
         userId = preferences.getString("id", "");
         contactsListView = (ListView) findViewById(R.id.contactsListView);
 
-        getContacts();
+
+        PA = new PersonalAssistant(this);
+
+        PA.setOnPersonalAssistantConnectionListener(new PersonalAssistantConnection() {
+            @Override
+            public void OnConnected() {
+                Log.i(TAG, "PersonalAssistantConnection connected");
+
+                getContacts();
+            }
+
+            @Override
+            public void OnDisconnected() {
+                Log.i(TAG, "PersonalAssistantConnection disconnected");
+            }
+        });
+
+        PA.Init();
     }
 
 
     private void getContacts() {
 
-        PersonalAssistant PA = PersonalAssistantProvider.getPersonalAssistant(this);
         PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
 
         PM.retrieveAllUserContacts(userId, new PersonalizationArrayResponse() {
