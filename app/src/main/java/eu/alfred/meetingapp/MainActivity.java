@@ -30,7 +30,6 @@ import eu.alfred.api.personalization.model.Contact;
 import eu.alfred.api.personalization.webservice.PersonalizationManager;
 import eu.alfred.api.proxies.interfaces.ICadeCommand;
 import eu.alfred.meetingapp.adapter.RecyclerAdapter;
-import eu.alfred.meetingapp.helper.PersonalAssistantProvider;
 import eu.alfred.meetingapp.helper.PersonalizationArrayResponse;
 import eu.alfred.ui.AppActivity;
 import eu.alfred.ui.CircleButton;
@@ -54,16 +53,7 @@ public class MainActivity extends AppActivity implements ICadeCommand {
         getActionBar().setTitle(R.string.upcoming); // TODO: use resource
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String loggedUserId = preferences.getString("id", "");
-        if(loggedUserId.isEmpty()){
-            //userId = "56e6c782e1079f764b596c87";
-            //userId = "56e6f095e4b0fadc1367b66b";
-            userId = "571f928be4b0d25de0692ed6";
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("id", userId);
-            editor.commit();
-        }
-        else { userId = loggedUserId; }
+        userId = preferences.getString("id", "");
 
         dbHandler = new MyDBHandler(this, null, null, 1);
 
@@ -89,7 +79,6 @@ public class MainActivity extends AppActivity implements ICadeCommand {
 
         circleButton = (CircleButton) findViewById(R.id.voiceControlBtn);
         circleButton.setOnTouchListener(new MicrophoneTouchListener());
-
     }
 
     @Override

@@ -30,7 +30,6 @@ import eu.alfred.api.personalization.client.ContactDto;
 import eu.alfred.api.personalization.client.ContactMapper;
 import eu.alfred.api.personalization.model.Contact;
 import eu.alfred.api.personalization.webservice.PersonalizationManager;
-import eu.alfred.meetingapp.helper.PersonalAssistantProvider;
 import eu.alfred.meetingapp.helper.PersonalizationArrayResponse;
 
 public class ListContactsActivity extends FragmentActivity {
