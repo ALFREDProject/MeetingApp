@@ -91,7 +91,7 @@ public class ListContactsActivity extends FragmentActivity {
 		            Log.d(TAG, "Retrieved " + contact);
 
 		            contacts.add(contact);
-		            contactNames.add(contact.getFirstName() + " x " + contact.getAlfredUserName());
+		            contactNames.add(contact.getFirstName() + " " + contact.getLastName() + " " + contact.getAlfredUserName());
 	            }
 
 	            displayContacts();
