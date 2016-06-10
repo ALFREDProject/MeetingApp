@@ -14,8 +14,9 @@
     <string name="prompt_password">Passwort</string>
     <string name="action_sign_in_short">Anmelden</string>
     <string name="logout">Abmelden</string>
-    <string name="upcoming">Anstehende Termine</string>
+    <string name="upcoming">Termine</string>
     <string name="contacts_selected">Kontakte ausgewählt</string>
     <string name="calendar_message">Automatically added by ALFRED</string>
     <string name="add_to_calendar">zum Kalender hinzufügen</string>
+    <!--string name="upcoming">Anstehende Termine</string-->
 </resources>
