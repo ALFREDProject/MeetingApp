@@ -8,8 +8,8 @@ android {
         applicationId "eu.alfred.meetingapp"
         minSdkVersion 18
         targetSdkVersion 21
-        versionCode 6
-        versionName "6.0"
+        versionCode 7
+        versionName "7.0"
     }
     buildTypes {
         release {
